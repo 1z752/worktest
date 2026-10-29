@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>你更适合上班还是创业 · 职业倾向测试</title>
+  <style>
+    /* 全局样式 */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, 'Noto Sans', sans-serif;
+    }
+
+    body {
+      background: linear-gradient(145deg, #f8faff 0%, #edf2f9 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 24px 16px;
+    }
+
+    .app-wrapper {
+      max-width: 1100px;
+      width: 100%;
+      background: rgba(255, 255, 255, 0.75);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-radius: 48px;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15), 0 4px 18px 0 rgba(0, 0, 0, 0.05);
+      padding: 32px 28px 40px;
+      border: 1px solid rgba(255, 255, 255, 0.6);
+      transition: all 0.2s;
+    }
+
+    /* 头部 */
+    .header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 32px;
+      padding: 0 8px;
+    }
+
+    .logo-area h1 {
+      font-size: 2.1rem;
+      font-weight: 700;
+      background: linear-gradient(135deg, #1e2b4f, #2d3b6b);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      letter-spacing: -0.02em;
+    }
+
+    .logo-area p {
+      font-size: 0.95rem;
+      color: #5f6c8c;
+      margin-top: 6px;
+      font-weight: 400;
+    }
+
+    /* 版本切换按钮 */
+    .version-tabs {
+      display: flex;
+      gap: 8px;
+      background: #e9eef6;
+      padding: 6px;
+      border-radius: 60px;
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .version-btn {
+      border: none;
+      padding: 12px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 60px;
+      background: transparent;
+      color: #4a5568;
+      cursor: pointer;
+      transition: all 0.25s ease;
+      letter-spacing: 0.3px;
+      box-shadow: 0 0 0 0 transparent;
+    }
+
+    .version-btn.active {
+      background: white;
+      color: #1e2b4f;
+      box-shadow: 0 8px 18px -6px rgba(0, 20, 50, 0.2), 0 2px 6px rgba(0, 0, 0, 0.02);
+      font-weight: 700;
+    }
+
+    .version-btn:hover:not(.active) {
+      background: rgba(255, 255, 255, 0.6);
+      color: #1e2b4f;
+    }
+
+    /* 题目区域 */
+    .quiz-container {
+      background: #ffffffd9;
+      border-radius: 32px;
+      padding: 28px 28px 16px;
+      box-shadow: inset 0 1px 4px rgba(255, 255, 255, 0.8), 0 12px 30px -12px rgba(0, 20, 50, 0.2);
+      border: 1px solid #ffffff;
+      margin-bottom: 24px;
+      max-height: 620px;
+      overflow-y: auto;
+      scrollbar-width: thin;
+      scrollbar-color: #b8c4dc #eef2f8;
+    }
+
+    .quiz-container::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .quiz-container::-webkit-scrollbar-track {
+      background: #eef2f8;
+      border-radius: 10px;
+    }
+
+    .quiz-container::-webkit-scrollbar-thumb {
+      background: #b8c4dc;
+      border-radius: 10px;
+    }
+
+    .question-item {
+      background: #f9fbfe;
+      border-radius: 20px;
+      padding: 18px 20px;
+      margin-bottom: 14px;
+      border: 1px solid #e3e9f2;
+      transition: all 0.15s;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.01);
+    }
+
+    .question-item:hover {
+      border-color: #cbd5e1;
+      background: #ffffff;
+      box-shadow: 0 6px 14px -8px rgba(0, 20, 40, 0.1);
+    }
+
+    .q-text {
+      flex: 1;
+      font-size: 1.02rem;
+      font-weight: 500;
+      color: #1d2a44;
+      line-height: 1.45;
+      min-width: 200px;
+    }
+
+    .q-num {
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      background: #2d3b6b;
+      color: white;
+      border-radius: 10px;
+      text-align: center;
+      line-height: 26px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      margin-right: 12px;
+      flex-shrink: 0;
+    }
+
+    /* 评分选项 */
+    .rating-group {
+      display: flex;
+      gap: 8px;
+      flex-shrink: 0;
+    }
+
+    .rating-option {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      cursor: pointer;
+      border-radius: 14px;
+      transition: all 0.15s;
+    }
+
+    .rating-option input {
+      display: none;
+    }
+
+    .rating-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 46px;
+      height: 46px;
+      border-radius: 16px;
+      background: #ffffff;
+      border: 1.5px solid #d9e1ec;
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: #4b5a76;
+      transition: all 0.15s ease;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.02);
+    }
+
+    .rating-option:hover .rating-label {
+      border-color: #a5b4d0;
+      background: #f5f9ff;
+      transform: scale(1.02);
+    }
+
+    .rating-option input:checked + .rating-label {
+      background: #2d3b6b;
+      border-color: #2d3b6b;
+      color: white;
+      box-shadow: 0 8px 14px -8px #1e2b4f, 0 0 0 2px rgba(45, 59, 107, 0.15);
+      font-weight: 700;
+    }
+
+    /* 底部按钮及结果区 */
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 8px 8px 0;
+    }
+
+    .btn-primary {
+      background: #1e2b4f;
+      color: white;
+      border: none;
+      padding: 16px 44px;
+      font-size: 1.1rem;
+      font-weight: 600;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 14px 24px -12px #1e2b4f, 0 2px 6px rgba(0, 0, 0, 0.05);
+      letter-spacing: 0.3px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn-primary:hover {
+      background: #2a3b66;
+      transform: translateY(-2px);
+      box-shadow: 0 20px 28px -14px #1e2b4f, 0 4px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .btn-primary:active {
+      transform: translateY(1px);
+      box-shadow: 0 10px 18px -10px #1e2b4f;
+    }
+
+    .btn-secondary {
+      background: transparent;
+      border: 1.5px solid #cdd9e9;
+      color: #3e4e70;
+      padding: 14px 26px;
+      font-size: 0.98rem;
+      font-weight: 500;
+      border-radius: 50px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .btn-secondary:hover {
+      background: #f0f5ff;
+      border-color: #a5b9d9;
+      color: #1e2b4f;
+    }
+
+    /* 结果卡片 */
+    .result-card {
+      margin-top: 22px;
+      background: #ffffffea;
+      backdrop-filter: blur(4px);
+      border-radius: 28px;
+      padding: 26px 28px;
+      border: 1px solid #ffffff;
+      box-shadow: 0 16px 32px -16px rgba(0, 20, 40, 0.2);
+      transition: all 0.3s;
+    }
+
+    .result-title {
+      font-size: 1.2rem;
+      font-weight: 600;
+      color: #1a253e;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .result-score {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #1e2b4f;
+      letter-spacing: -0.02em;
+      margin-right: 6px;
+    }
+
+    .result-desc {
+      font-size: 1.02rem;
+      line-height: 1.6;
+      color: #2d3e5f;
+      background: #f6faff;
+      padding: 18px 22px;
+      border-radius: 20px;
+      border-left: 6px solid #2d3b6b;
+    }
+
+    .result-desc strong {
+      color: #1e2b4f;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    /* 小提示 */
+    .hint {
+      color: #6f7d9a;
+      font-size: 0.85rem;
+      margin-top: 8px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    /* 响应式 */
+    @media (max-width: 700px) {
+      .app-wrapper {
+        padding: 22px 16px 30px;
+        border-radius: 30px;
+      }
+
+      .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      .logo-area h1 {
+        font-size: 1.8rem;
+      }
+
+      .version-tabs {
+        width: 100%;
+      }
+
+      .version-btn {
+        flex: 1;
+        padding: 12px 10px;
+        font-size: 0.9rem;
+        text-align: center;
+      }
+
+      .question-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+      }
+
+      .rating-group {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .rating-label {
+        width: 44px;
+        height: 44px;
+      }
+
+      .actions {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .btn-primary {
+        justify-content: center;
+        padding: 16px 24px;
+      }
+
+      .btn-secondary {
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 420px) {
+      .rating-label {
+        width: 38px;
+        height: 38px;
+        font-size: 0.85rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-wrapper">
+    <div class="header">
+      <div class="logo-area">
+        <h1>你更适合上班还是创业</h1>
+        <p>基于16题精简版 / 48题完全版 · 职业倾向自测</p>
+      </div>
+      <div class="version-tabs">
+        <button id="tabLite" class="version-btn active">精简版 16题</button>
+        <button id="tabFull" class="version-btn">完全版 48题</button>
+      </div>
+    </div>
+
+    <!-- 题目区 -->
+    <div class="quiz-container" id="quizContainer">
+      <!-- 动态渲染题目 -->
+    </div>
+
+    <!-- 底部操作按钮 -->
+    <div class="actions">
+      <button class="btn-primary" id="calcBtn">
+        <span>查看结果</span>
+        <span>→</span>
+      </button>
+      <button class="btn-secondary" id="resetBtn">重置所有答案</button>
+    </div>
+
+    <!-- 结果卡片 -->
+    <div id="resultCard" class="result-card hidden">
+      <div class="result-title">
+        <span>📊 你的倾向</span>
+      </div>
+      <div>
+        <span class="result-score" id="scoreDisplay">0</span>
+        <span style="font-size:1.1rem;color:#5e6f8f;">/ 80 或 240</span>
+      </div>
+      <div class="result-desc" id="resultDesc">
+        请完成测试后查看结果
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      // ---------- 题库数据 ----------
+      // 精简版 16题 (每道题1~5分，分值高表示越倾向创业)
+      const LITE_QUESTIONS = [
+        "我能接受半年以上收入不稳定的状态。",
+        "我身边已经有可验证的客户、资源或渠道。",
+        "即使没有人监督，我也能高效推进事情。",
+        "我遇到拒绝和失败后能很快恢复状态。",
+        "我在某个领域有别人愿意付费的专长或技能。",
+        "我能够独立进行销售或谈合作。",
+        "我的家庭支持我冒一次险（创业或自由职业）。",
+        "我能清楚地计算成本和现金流。",
+        "我喜欢自己决定每天做什么，而不是被安排。",
+        "面对模糊和变化，我通常感到兴奋而非焦虑。",
+        "我曾经通过副业或小项目赚到过钱。",
+        "我善于发现身边人未被满足的需求。",
+        "我能够承受一段时间没有稳定收入。",
+        "我更喜欢挑战不确定的结果，而不是固定薪水。",
+        "我自认为执行力强，能边做边调整。",
+        "我身边有创业成功或正在创业的朋友可以请教。"
+      ];
+
+      // 完全版 48题 (每道题1~5分，为了合理，从多个维度扩展，最终总分240)
+      const FULL_QUESTIONS = [
+        // 风险承受 (8题)
+        "我能接受半年以上收入不稳定的状态。",
+        "即使创业失败，我也有足够的存款支撑生活。",
+        "我的家庭经济状况允许我承担一定的创业风险。",
+        "我能承受收入归零甚至轻度负债的可能。",
+        "我愿意为了潜在的高回报接受较低的稳定性。",
+        "我没有沉重的房贷/车贷等固定大额支出压力。",
+        "如果创业失败，我有信心能重新找到工作。",
+        "我通常不会因为财务不确定性而失眠。",
+        // 不确定性耐受 (8题)
+        "面对模糊和变化，我通常感到兴奋而非焦虑。",
+        "我喜欢在没有明确指示的情况下自己找方向。",
+        "变化和突发状况不会让我长时间陷入内耗。",
+        "我适应“边打边调整”的工作节奏。",
+        "没有KPI和deadline时，我依然能推动自己前进。",
+        "我享受解决没有现成答案的问题。",
+        "我能接受事情不按计划发展并快速调整。",
+        "我对“未知”的恐惧小于对“一成不变”的厌倦。",
+        // 自驱力与执行力 (8题)
+        "即使没有人监督，我也能高效推进事情。",
+        "我通常会主动设定目标并按时完成。",
+        "我习惯提前规划，而不是被deadline追着走。",
+        "我能在资源不足的情况下想办法启动。",
+        "我很少拖延重要但不紧急的事。",
+        "我遇到困难时第一反应是找解决方案。",
+        "我能够长时间保持专注在一件重要的事情上。",
+        "我不需要外界激励就能保持工作热情。",
+        // 销售与沟通 (8题)
+        "我能够独立进行销售或谈合作。",
+        "我擅长向别人介绍我的想法并说服对方。",
+        "我乐于主动联系陌生人或潜在客户。",
+        "面对拒绝，我能快速调整心态继续沟通。",
+        "我能够清晰表达自己产品或服务的价值。",
+        "我习惯在社交场合中主动建立人脉。",
+        "我能够处理客户的异议和讨价还价。",
+        "我过去有过成功说服他人合作的经历。",
+        // 资源与专长 (8题)
+        "我在某个领域有别人愿意付费的专长或技能。",
+        "我身边已经有可验证的客户、资源或渠道。",
+        "我曾经通过副业或小项目赚到过钱。",
+        "我善于发现身边人未被满足的需求。",
+        "我认识一些可以成为潜在合作伙伴的人。",
+        "我能接触到目标行业的供应链或关键人脉。",
+        "我具备把想法变成产品/服务的基本能力。",
+        "我了解如何低成本获取第一批用户。",
+        // 心理韧性 (8题)
+        "我遇到拒绝和失败后能很快恢复状态。",
+        "我能够承受较长时间没有正向反馈。",
+        "即使别人不看好，我依然能坚持自己的判断。",
+        "我很少因为一次挫折就放弃整个计划。",
+        "我习惯把失败看作学习机会而非打击。",
+        "我能够在压力下保持冷静并做决策。",
+        "我通常不会因为焦虑而影响行动力。",
+        "我能够接受前期投入可能没有回报。"
+      ];
+
+      // ---------- 状态 ----------
+      let currentVersion = 'lite'; // 'lite' 或 'full'
+      let answers = {};            // 格式: { version: { questionIndex: score } }
+
+      // 初始化答案存储
+      answers.lite = {};
+      answers.full = {};
+
+      // 用于快速访问题目
+      const quizContainer = document.getElementById('quizContainer');
+      const tabLite = document.getElementById('tabLite');
+      const tabFull = document.getElementById('tabFull');
+      const calcBtn = document.getElementById('calcBtn');
+      const resetBtn = document.getElementById('resetBtn');
+      const resultCard = document.getElementById('resultCard');
+      const scoreDisplay = document.getElementById('scoreDisplay');
+      const resultDesc = document.getElementById('resultDesc');
+
+      // ---------- 工具函数 ----------
+      // 获取当前题目列表
+      function getCurrentQuestions() {
+        return currentVersion === 'lite' ? LITE_QUESTIONS : FULL_QUESTIONS;
+      }
+
+      // 获取当前题目的答案对象
+      function getCurrentAnswers() {
+        return answers[currentVersion];
+      }
+
+      // 计算总分 (已答题目累加，未答默认0)
+      function calculateScore() {
+        const qs = getCurrentQuestions();
+        const ans = getCurrentAnswers();
+        let total = 0;
+        for (let i = 0; i < qs.length; i++) {
+          total += ans[i] || 0;
+        }
+        return total;
+      }
+
+      // 根据分数返回解读 (满分: lite 80, full 240)
+      function getResultMessage(score) {
+        const maxScore = currentVersion === 'lite' ? 80 : 240;
+        const percent = (score / maxScore) * 100;
+
+        if (currentVersion === 'lite') {
+          // 精简版阈值：满分80
+          if (percent >= 70) {
+            return '<strong>🔥 创业倾向很强</strong><br>你具备较好的风险承受力、自驱力和资源意识。建议你可以先从副业或小成本项目开始验证，不要急于裸辞，但可以认真规划创业路径。';
+          } else if (percent >= 40) {
+            return '<strong>⚖️ 上班与创业之间</strong><br>你有一些创业潜质，但也重视稳定。更稳妥的路径是：先在本职工作中积累行业认知、人脉和资金，同时用业余时间尝试小项目，验证跑通后再考虑全职创业。';
+          } else {
+            return '<strong>💼 现阶段更适合上班</strong><br>你可能更需要稳定的现金流和明确的职责边界。创业的风险和不确定性目前对你来说可能压力较大。建议先专注专业能力提升，等资源、心态和资金更成熟后再评估。';
+          }
+        } else {
+          // 完全版阈值：满分240
+          if (percent >= 70) {
+            return '<strong>🔥 创业倾向非常明显</strong><br>你在风险承受、自驱力、销售、资源等多个维度得分较高。你具备创业者的核心特质，但依然建议先做小范围MVP测试，控制风险。';
+          } else if (percent >= 40) {
+            return '<strong>⚖️ 混合型：上班与创业均可探索</strong><br>你有创业的某些优势，但也有需要补足的地方。建议先用副业或内部创业的方式锻炼，同时积累客户和渠道。不必急着二选一。';
+          } else {
+            return '<strong>💼 当前更适合稳定的工作</strong><br>你在风险承受、不确定性耐受等方面得分偏低，创业可能会带来较大压力。先上班积累经验和资源，等条件成熟后再考虑副业或创业会更稳妥。';
+          }
+        }
+      }
+
+      // 渲染题目
+      function renderQuestions() {
+        const questions = getCurrentQuestions();
+        const savedAnswers = getCurrentAnswers();
+        let html = '';
+
+        questions.forEach((q, idx) => {
+          const selectedScore = savedAnswers[idx] || 0;
+
+          html += `<div class="question-item" data-qidx="${idx}">`;
+          html += `<div class="q-text"><span class="q-num">${idx+1}</span>${q}</div>`;
+          html += `<div class="rating-group">`;
+
+          // 1~5 分选项
+          for (let score = 1; score <= 5; score++) {
+            const checked = selectedScore === score ? 'checked' : '';
+            html += `<label class="rating-option">
+              <input type="radio" name="q${idx}" value="${score}" data-qidx="${idx}" ${checked}>
+              <span class="rating-label">${score}</span>
+            </label>`;
+          }
+
+          html += `</div></div>`;
+        });
+
+        quizContainer.innerHTML = html;
+
+        // 绑定评分事件 (利用事件委托)
+        quizContainer.querySelectorAll('input[type="radio"]').forEach(radio => {
+          radio.addEventListener('change', function(e) {
+            const qidx = parseInt(this.dataset.qidx);
+            const score = parseInt(this.value);
+            const ans = getCurrentAnswers();
+            ans[qidx] = score;
+            // 可选：实时更新总分显示？暂不自动，点击按钮才更新。
+            // 但可以清除结果卡片的“陈旧”提示
+            if (!resultCard.classList.contains('hidden')) {
+              // 如果结果卡片已显示，可以提示重新计算？暂时保持不动，用户可以再次点击。
+            }
+          });
+        });
+
+        // 更新结果卡片 (如果当前显示结果，则同步刷新)
+        updateResultIfVisible();
+      }
+
+      // 计算并展示结果
+      function showResult() {
+        const score = calculateScore();
+        const maxScore = currentVersion === 'lite' ? 80 : 240;
+        scoreDisplay.innerText = `${score}`;
+        resultDesc.innerHTML = getResultMessage(score);
+
+        // 更新一下满分显示文字
+        const maxSpan = scoreDisplay.nextElementSibling;
+        if (maxSpan) {
+          maxSpan.innerText = `/ ${maxScore}`;
+        }
+
+        resultCard.classList.remove('hidden');
+        // 滚动到结果卡片
+        resultCard.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+
+      // 如果结果卡片可见，则根据当前答案刷新结果
+      function updateResultIfVisible() {
+        if (!resultCard.classList.contains('hidden')) {
+          const score = calculateScore();
+          const maxScore = currentVersion === 'lite' ? 80 : 240;
+          scoreDisplay.innerText = `${score}`;
+          const maxSpan = scoreDisplay.nextElementSibling;
+          if (maxSpan) maxSpan.innerText = `/ ${maxScore}`;
+          resultDesc.innerHTML = getResultMessage(score);
+        }
+      }
+
+      // 重置当前版本的所有答案
+      function resetCurrentAnswers() {
+        const ans = getCurrentAnswers();
+        // 清空对象
+        Object.keys(ans).forEach(key => delete ans[key]);
+        // 重新渲染题目 (清空选中状态)
+        renderQuestions();
+        // 隐藏结果卡片
+        resultCard.classList.add('hidden');
+        // 滚动到顶部
+        quizContainer.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // 切换版本
+      function switchVersion(version) {
+        if (version === currentVersion) return;
+
+        currentVersion = version;
+
+        // 更新按钮状态
+        if (version === 'lite') {
+          tabLite.classList.add('active');
+          tabFull.classList.remove('active');
+        } else {
+          tabFull.classList.add('active');
+          tabLite.classList.remove('active');
+        }
+
+        // 重新渲染题目
+        renderQuestions();
+
+        // 隐藏结果卡片（因为版本不同了，避免混淆）
+        resultCard.classList.add('hidden');
+
+        // 滚动到顶部
+        quizContainer.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // 事件绑定
+      function bindEvents() {
+        // 切换版本
+        tabLite.addEventListener('click', () => switchVersion('lite'));
+        tabFull.addEventListener('click', () => switchVersion('full'));
+
+        // 查看结果
+        calcBtn.addEventListener('click', showResult);
+
+        // 重置
+        resetBtn.addEventListener('click', resetCurrentAnswers);
+      }
+
+      // 初始化：默认lite版本，渲染题目
+      function init() {
+        // 确保答案存储干净
+        answers.lite = {};
+        answers.full = {};
+        currentVersion = 'lite';
+        tabLite.classList.add('active');
+        tabFull.classList.remove('active');
+        renderQuestions();
+        bindEvents();
+        resultCard.classList.add('hidden');
+      }
+
+      init();
+    })();
+  </script>
+</body>
+</html>
